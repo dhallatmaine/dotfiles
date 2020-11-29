@@ -69,73 +69,27 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
 
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-#alias ls='colorls -lA --sd'
-
 alias ll='colorls -lA --sd --gs --group-directories-first'
 alias ls='colorls --group-directories-first'
 
 alias gp="git pull origin master"
 alias gc="git clean"
 alias gf="git fetch --prune"
-alias tunnel_stage_lb="ssh admin@ec2-54-214-159-1.us-west-2.compute.amazonaws.com -L 8889:internal-stage-cluster-LoadBalancer-2107518619.us-west-2.elb.amazonaws.com:80"
 
 export PATH=~/Library/Python/3.7/bin:$PATH
 
-function restart {
-    if [ -z "$1" ]; then
-        # display usage if no parameters are given
-        echo "Usage: restart <nyshexcs|contract-service|user-service|login-service>"
-        return 1
-    else
-	echo "Restarting $1" 
-        currentDir=$PWD
-        if [ "$1" = "nyshexcs" ]; then
-            cd ~/dev/nyshexcs/code
-        else
-            cd ~/dev/$1
-        fi
-        mvn clean package
-        cd ~/dev/dev/docker-compose
-        ./run-cluster restart $1
-        cd $currentDir
-    fi
+# This speeds up pasting w/ autosuggest
+# https://github.com/zsh-users/zsh-autosuggestions/issues/238
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
 }
 
-clear
-
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
 
 function powerline_precmd() {
     PS1="$(powerline-shell --shell zsh $?)"
@@ -154,21 +108,7 @@ if [ "$TERM" != "linux" ]; then
     install_powerline_precmd
 fi
 
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# This speeds up pasting w/ autosuggest
-# https://github.com/zsh-users/zsh-autosuggestions/issues/238
-pasteinit() {
-  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
-  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
-}
-
-pastefinish() {
-  zle -N self-insert $OLD_SELF_INSERT
-}
-zstyle :bracketed-paste-magic paste-init pasteinit
-zstyle :bracketed-paste-magic paste-finish pastefinish
-
-source /home/vecowski/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-source /home/vecowski/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
