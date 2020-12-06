@@ -1,0 +1,20 @@
+#list files
+alias ll='colorls -lA --sd --gs --group-directories-first'
+alias ls='colorls -l --group-directories-first'
+
+#git
+alias gp="git pull origin master"
+alias gc="git clean"
+alias gf="git fetch --prune"
+
+#youtube-dl
+alias yta="proxychains -q youtube-dl -f 'bestaudio[ext=m4a]'"
+
+# crypto
+alias btc="proxychains -q curl -s https://web-api.coinmarketcap.com/v1/cryptocurrency/listings/latest\?start=1\&limit=1 | jq -r '.data[0].quote.USD.price'"
+alias icx="proxychains -q curl -s https://web-api.coinmarketcap.com/v1/cryptocurrency/listings/latest\?start=66\&limit=1 | jq -r '.data[0].quote.USD.price'"
+alias xlm="proxychains -q curl -s https://web-api.coinmarketcap.com/v1/cryptocurrency/listings/latest\?start=11\&limit=1 | jq -r '.data[0].quote.USD.price'"
+
+#edit
+alias ealias="vim ~/.config/.alias"
+
